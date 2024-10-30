@@ -152,6 +152,14 @@ if __name__ == "__main__":
             successful_sign_in_users = []
             successful_sign_out_users = []
 
+            # 先签退排除故障
+            for userName in userNameli:
+                pwd = credentials[userName]
+                token = getToken(userName, pwd)
+                sign_out(userName, pwd, token)
+
+            time.sleep(random.randint(1, 3))  # 随机等待1到3秒
+
             # 签到
             for userName in userNameli:
                 pwd = credentials[userName]
@@ -168,10 +176,11 @@ if __name__ == "__main__":
             with open(file_path, 'a') as file:  # 'a'模式表示追加到文件末尾
                         file.write('\n')
             # 生成一个的随机休眠时间（以秒为单位） 锻炼
-            random_sleep_time = random.randint(1805, 2189)
-            successful_sign_in_users.append('此次打卡时间最少有' + str(random_sleep_time) + '秒')
+            # random_sleep_time = random.randint(1805, 2189)
+            random_sleep_time = random.randint(1, 3)
             # 发送签到成功邮件
             if successful_sign_in_users:
+                successful_sign_in_users.append('此次打卡时间最少有' + str(random_sleep_time) + '秒')
                 subject = "打卡签到成功信息"
                 message = "\n".join(map(str, successful_sign_in_users))
                 send_success_email(subject, message)
@@ -192,7 +201,7 @@ if __name__ == "__main__":
                 # 获取当前脚本所在目录，并设置文件路径
                 current_directory = os.path.dirname(os.path.abspath(__file__))
                 file_path = os.path.join(current_directory, 'successful_sign_out.txt')
-                if "成功" in sign_out_msg:
+                if "成功" in sign_out_msg and '请勿重复签退' not in sign_out_msg:
                     successful_sign_out_users.append(userName + ": " + sign_out_msg)
                     with open(file_path, 'a') as file:  # 'a'模式表示追加到文件末尾
                         file.write(userName + "-" + str(datetime.datetime.now()) + '-signout\n')
@@ -200,9 +209,9 @@ if __name__ == "__main__":
             with open(file_path, 'a') as file:  # 'a'模式表示追加到文件末尾
                         file.write('\n')
 
-            successful_sign_out_users.append('此次打卡时间最少有' + str(random_sleep_time) + '秒')
             # 发送签退成功邮件
             if successful_sign_out_users:
+                successful_sign_out_users.append('此次打卡时间最少有' + str(random_sleep_time) + '秒')
                 subject = "打卡签退成功信息"
                 message = "\n".join(map(str, successful_sign_out_users))
                 send_success_email(subject, message)
@@ -213,19 +222,11 @@ if __name__ == "__main__":
 
         except requests.exceptions.RequestException as e:
             print("网络连接出错: ", e)
-            # 运行renzheng.py文件
-            current_directory = os.path.dirname(os.path.abspath(__file__))
-            renzheng_path = os.path.join(current_directory, 'renzheng.py')
-            os.system(f'python "{renzheng_path}"')
 
 
         except Exception as e:
             # 捕获其他未预料的错误，打印错误信息以便调试
             print("发生未知错误: ", e)
-            # 运行renzheng.py文件
-            current_directory = os.path.dirname(os.path.abspath(__file__))
-            renzheng_path = os.path.join(current_directory, 'renzheng.py')
-            os.system(f'python "{renzheng_path}"')
 
         # 等待一段时间后重试，以避免频繁的请求失败
-        time.sleep(60)
+        time.sleep(10)

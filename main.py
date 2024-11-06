@@ -15,16 +15,8 @@ import urllib3
 
 # 忽略InsecureRequestWarning
 warnings.simplefilter('ignore', urllib3.exceptions.InsecureRequestWarning)
-credentials = {
-    "3123108013": "20010628.jyh",
-    "3123108043": "Tsg521189",
-    "3122303038": "xp615719",
-    "3123108112": "Ghgh5656@",
-    "3123354008": "asd1231236666",
-    "4124197010": "WSS9408051.",
-    "3124108068": "910159zheng",
-    # 可以继续添加其他学号和密码
-}
+
+from userInfo import credentials
 
 
 def sign_in(userName, pwd, token):
@@ -123,10 +115,10 @@ def print_now_time():
     formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
     print("当前时间:", formatted_time)
 
-
+from userInfo import emailkey, recipient_email, sender_email
 def send_success_email(subject, message):
     sender_email = '1905955545@qq.com'  # 发件人邮箱
-    sender_password = 'aikyancbnkmmbdec'  # 发件人邮箱授权码
+    sender_password =  emailkey # 发件人邮箱授权码
     recipient_email = 'yuhaoji2001@163.com'  # 收件人邮箱
 
     msg = MIMEMultipart()
@@ -176,8 +168,8 @@ if __name__ == "__main__":
             with open(file_path, 'a') as file:  # 'a'模式表示追加到文件末尾
                         file.write('\n')
             # 生成一个的随机休眠时间（以秒为单位） 锻炼
-            # random_sleep_time = random.randint(1805, 2189)
-            random_sleep_time = random.randint(1, 3)
+            random_sleep_time = random.randint(1805, 2189)
+            # random_sleep_time = random.randint(1, 3)
             # 发送签到成功邮件
             if successful_sign_in_users:
                 successful_sign_in_users.append('此次打卡时间最少有' + str(random_sleep_time) + '秒')

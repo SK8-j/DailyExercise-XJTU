@@ -5,6 +5,8 @@ __pycache__/
 
 # txt
 *.txt
+# 忽略所有txt
+*.txt
 
 # C extensions
 *.so

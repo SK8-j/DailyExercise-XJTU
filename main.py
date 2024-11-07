@@ -16,7 +16,7 @@ import urllib3
 # 忽略InsecureRequestWarning
 warnings.simplefilter('ignore', urllib3.exceptions.InsecureRequestWarning)
 
-from userInfo import credentials
+from userInfo import emailkey, recipient_email1, sender_email1, credentials
 
 
 def sign_in(userName, pwd, token):
@@ -117,9 +117,9 @@ def print_now_time():
 
 from userInfo import emailkey, recipient_email, sender_email
 def send_success_email(subject, message):
-    sender_email = '1905955545@qq.com'  # 发件人邮箱
+    sender_email = sender_email1  # 发件人邮箱
     sender_password =  emailkey # 发件人邮箱授权码
-    recipient_email = 'yuhaoji2001@163.com'  # 收件人邮箱
+    recipient_email = recipient_email1  # 收件人邮箱
 
     msg = MIMEMultipart()
     msg['From'] = sender_email
@@ -128,7 +128,7 @@ def send_success_email(subject, message):
 
     msg.attach(MIMEText(message, 'plain'))
 
-    server = smtplib.SMTP_SSL('smtp.qq.com', 465)
+    server = smtplib.SMTP_SSL('smtp.qq.com', 465) #如果不是QQ邮箱请自行修改
     server.login(sender_email, sender_password)
     server.sendmail(sender_email, recipient_email, msg.as_string())
     server.quit()
